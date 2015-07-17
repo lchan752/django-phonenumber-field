@@ -17,7 +17,7 @@ class PhonePrefixSelect(Select):
 
     def __init__(self, initial=None):
         choices = [('', '---------')]
-        locale = Locale(translation.to_locale(translation.get_language()))
+        locale = Locale(translation.to_locale(translation.get_language())) if translation.get_language() else Locale('en_US')
         for prefix, values in _COUNTRY_CODE_TO_REGION_CODE.iteritems():
             prefix = '+%d' % prefix
             if initial and initial in values:
@@ -56,4 +56,6 @@ class PhoneNumberPrefixWidget(MultiWidget):
     def value_from_datadict(self, data, files, name):
         values = super(PhoneNumberPrefixWidget, self).value_from_datadict(
             data, files, name)
+        if not any(values):
+            return None
         return '%s.%s' % tuple(values)
